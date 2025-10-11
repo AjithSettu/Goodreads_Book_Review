@@ -1,0 +1,177 @@
+Creating a Database:
+create database goodreads;
+use goodreads
+
+--Creating a table for goodreads_reviews:
+CREATE TABLE goodreads_reviews (
+    review_id VARCHAR(100),
+    user_id VARCHAR(100),
+    work_id VARCHAR(100),
+    started_at DATE,
+    read_at DATE,
+    date_added DATE,
+    rating INT,
+    review_text LONGTEXT,
+    n_votes INT,
+    n_comments INT,
+    CONSTRAINT fk_work_id 
+        FOREIGN KEY (work_id) 
+        REFERENCES goodsreads_works(work_id)
+);
+
+--Creating a table for goodsreads_works:
+create table goodsreads_works(work_id varchar(100),
+isbn varchar(20),
+isbn13 varchar(20),
+original_title varchar(100),
+author varchar(100),
+original_publication_year year,
+num_pages int,
+description varchar(300),
+genres varchar(100),
+image_url varchar(300),
+reviews_count int,
+text_reviews_count int,
+5_star_ratings int,
+4_star_ratings int,
+3_star_ratings int,
+2_star_ratings int,
+1_star_ratings int,
+ratings_count int,
+avg_rating float,
+similar_books varchar(200),
+constraint PK_WORK_ID PRIMARY KEY GOODSREADS_WORKS(WORK_ID)
+);
+
+--Modifying the datatypes for loading data into the table:
+alter table  goodsreads_works rename to goodreads_works;
+alter table goodsreads_works modify description longtext;
+alter table goodsreads_works modify genres longtext;
+alter table goodsreads_works modify original_publication_year int;
+
+-- Modifying the datatype, after loading the dataset it causes significant slowness, so i increased the Increased server timeouts.
+SET GLOBAL net_read_timeout = 600;
+SET GLOBAL net_write_timeout = 600;
+SET GLOBAL wait_timeout = 600;
+SET GLOBAL interactive_timeout = 600;
+
+ALTER TABLE goodsreads_works 
+MODIFY COLUMN original_title LONGTEXT, ALGORITHM=INPLACE, LOCK=NONE;
+
+-- Q/A ANALYSIS:
+-- 1)What are the most popular books and authors? What about the most controversial?
+-- The most popular books - Books with highest number of ratings
+
+select max(ratings_count) as ratings_count,work_id,original_title from goodreads_works
+group by work_id,original_title order by max(ratings_count) desc;
+
+-- The most Popular authors - author with highest number of reviews_count
+
+select max(reviews_count) as reviews_count,author,original_title from goodreads_works
+group by author,original_title order by max(reviews_count) desc;
+
+-- The most controversial books - Books with low number of ratings
+
+select max(ratings_count) as ratings_count,work_id,original_title from goodreads_works
+group by work_id,original_title order by max(ratings_count) asc;
+
+-- The controversial authors - books with low number of reviews_count.
+
+select max(reviews_count) as reviews_count,author,original_title from goodreads_works
+group by author,original_title order by max(reviews_count) asc;
+
+-- 2)Which genres have the highest reader engagement? What are their most popular books?
+
+create temporary table temp_genre as(
+WITH RECURSIVE numbers AS (
+  SELECT 1 AS n
+  UNION ALL
+  SELECT n + 1 FROM numbers WHERE n < 22
+)
+SELECT
+    w.work_id,
+    w.original_title,w.ratings_count,w.reviews_count,
+    TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(w.genres, ',', n), ',', -1)) AS genre
+  FROM goodreads_works w
+  JOIN numbers ON n <= 1 + LENGTH(w.genres) - LENGTH(REPLACE(w.genres, ',', ''))
+  WHERE TRIM(SUBSTRING_INDEX(SUBSTRING_INDEX(w.genres, ',', n), ',', -1)) <> ''
+  order by w.ratings_count desc);
+
+-- Biograpgy, children and comics are the top 3 genre with highest reader engagement.
+select count(distinct(work_id)) as no_of_books,genre,sum(ratings_count) as ratings_count
+,sum(reviews_count) as reviews_count from temp_genre
+group by genre;
+
+-- The most popular books based on genre.
+select * from(
+select row_number()over(partition by genre order by sum(ratings_count) and sum(reviews_count)) as rnk,genre,work_id,original_title
+from temp_genre group by genre,work_id,original_title)as rte where rnk = 1;
+
+-- To find the maximum number of genre contains for a single book.
+select length(genres)-length(replace(genres,',','')),original_title
+from goodreads_works order by length(genres)-length(replace(genres,',',''))desc;
+
+-- 3)Who are the highest-rated authors?
+-- How have their works trended by publication year?
+
+select author,count(work_id) as number_of_books,
+group_concat(original_publication_year order by original_publication_year desc) as Year_Trend,
+group_concat(original_title order by original_publication_year desc) as Title_of_the_Books,
+sum(ratings_count) as highest_rated_author
+from goodreads_works group by author
+order by sum(ratings_count) desc limit 20;
+
+-- 4)Do longer reviews get more "helpful" votes? 
+-- What about reviews with extreme ratings (1 or 5 stars)?
+
+with long_reviews as (
+select char_length(gr.review_text) as length_of_text, gr.n_votes,gr.work_id,gw.author,gw.original_title
+from goodreads_reviews gr join goodreads_works  gw on gr.work_id = gw.work_id
+order by char_length(review_text) desc  limit 20)
+select * from long_reviews;
+
+--Increasing the server timeouts for fast fetching of data.
+SET GLOBAL wait_timeout=28800;
+SET GLOBAL interactive_timeout=28800;
+SET GLOBAL max_allowed_packet=64000000;
+
+--Counting sum of 1_star ratings.
+select sum(1_star_ratings) as count_of_1_star_ratings,
+work_id,original_title
+from goodreads_works
+group by work_id order by sum(1_star_ratings) desc;
+
+----Counting sum of 5_star ratings.
+select sum(5_star_ratings) as count_of_5_star_ratings,work_id,original_title
+from goodreads_works
+group by work_id order by sum(5_star_ratings) desc;
+
+
+## Detailed business solutions:
+
+-- 1)What are the most popular books and authors? What about the most controversial?
+      The most popular book  and author is "The Hunger Games" by "Suzanne Collins".
+      The most controversial book and author based on number of ratings is "Mary Robinette Kowal" by "Midnight Hour".
+
+-- 2)Which genres have the highest reader engagement? What are their most popular books?
+      Biograpgy, children and comics are the top 3 genre with highest reader engagement and their corresponding books 
+      are Harlot,Mei Shao Nu Zhan Shi seramunXin Zhuang Ban and All-Star Superman.
+
+-- 3)Who are the highest-rated authors? How have their works trended by publication year?
+      J.K. Rowling, Suzanne Collins, Stephenie Meyer are the top 3 authors with highest ratings, over the years they had published 12,8,8 books respectively.
+      J.K. Rowling was at the peak from 1997 to 2016.
+      Suzanne Collins was at the peak from 2003 to 2010.
+      Stephenie Meyer was at the peak from 2005 to 2015.
+
+-- 4)Do longer reviews get more "helpful" votes? 
+-- What about reviews with extreme ratings (1 or 5 stars)?
+      No, longer reviews doesn't get high number of comments.
+      "Twilight" and "Fifty shades of Grey" had got more number of one star rating
+      "Harry Potter and the Philosopher's Stone" and "The Hunger Games"
+      had got more number of five star ratings.
+
+
+
+
+
+
