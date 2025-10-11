@@ -163,8 +163,7 @@ group by work_id order by sum(5_star_ratings) desc;
       Suzanne Collins was at the peak from 2003 to 2010.
       Stephenie Meyer was at the peak from 2005 to 2015.
 
--- 4)Do longer reviews get more "helpful" votes? 
--- What about reviews with extreme ratings (1 or 5 stars)?
+-- 4)Do longer reviews get more "helpful" votes? What about reviews with extreme ratings (1 or 5 stars)?
       No, longer reviews doesn't get high number of comments.
       "Twilight" and "Fifty shades of Grey" had got more number of one star rating
       "Harry Potter and the Philosopher's Stone" and "The Hunger Games"
