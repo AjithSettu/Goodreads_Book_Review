@@ -45,10 +45,10 @@ This file contains information on wroks done by the author such as:
 - similar_books
 
 # Business Insights to be identified
---What are the most popular books and authors? What about the most controversial?
---Which genres have the highest reader engagement? What are their most popular books?
---Who are the highest-rated authors? How have their works trended by publication year?
---Do longer reviews get more "helpful" votes? What about reviews with extreme ratings (1 or 5 stars)?
+-What are the most popular books and authors? What about the most controversial?
+-Which genres have the highest reader engagement? What are their most popular books?
+-Who are the highest-rated authors? How have their works trended by publication year?
+-Do longer reviews get more "helpful" votes? What about reviews with extreme ratings (1 or 5 stars)?
 
 ## Project Structure
 ``````
