@@ -169,8 +169,58 @@ group by work_id order by sum(5_star_ratings) desc;
       "Harry Potter and the Philosopher's Stone" and "The Hunger Games"
       had got more number of five star ratings.
 
+🔍 Analysis & Queries
+1️⃣ Popularity & Controversy Analysis
 
+Popular Books: Identified books with the highest number of ratings.
 
+Popular Authors: Found authors with the highest total review counts.
+
+Controversial Books: Highlighted books with lowest ratings and reviews, indicating divided reader opinions.
+
+📊 Insight:
+
+Popular authors include J.K. Rowling, Suzanne Collins, and Stephenie Meyer.
+“Harry Potter and the Philosopher’s Stone” and “The Hunger Games” received the most 5-star ratings, while “Twilight” and “Fifty Shades of Grey” had the highest 1-star ratings.
+
+2️⃣ Genre Engagement Analysis
+
+Split multi-genre books using recursive CTEs to analyze genre-level engagement.
+
+Calculated ratings_count and reviews_count per genre.
+
+📊 Insight:
+
+Biography, Children, and Comics genres showed the highest reader engagement, with top books such as Harlot, Mei Shao Nu Zhan Shi seramunXin Zhuang Ban, and All-Star Superman.
+
+3️⃣ Author Trend Analysis
+
+Aggregated ratings by author and tracked publication year trends using GROUP_CONCAT.
+
+📊 Insight:
+
+J.K. Rowling: Peak period (1997–2016)
+
+Suzanne Collins: Peak period (2003–2010)
+
+Stephenie Meyer: Peak period (2005–2015)
+
+4️⃣ Review Helpfulness & Rating Extremes
+
+Compared review text length with number of helpful votes.
+
+Analyzed correlation between extreme ratings (1-star and 5-star) and popularity.
+
+📊 Insight:
+
+Longer reviews did not necessarily receive more helpful votes, but extreme-rated books tended to have higher engagement (both positive and negative).
+
+💡 Business Insights Summary
+#	Key Question	Insights
+1	Most Popular & Controversial Books/Authors	J.K. Rowling and Suzanne Collins dominate popularity; “Twilight” and “Fifty Shades of Grey” are most controversial.
+2	Genres with Highest Engagement	Biography, Children, and Comics genres lead in reader interaction.
+3	Highest-Rated Authors & Trends	Top authors show consistent engagement over years, indicating brand loyalty.
+4	Review Helpfulness	Review length doesn’t correlate with helpful votes; extreme opinions drive visibility.
 
 
 
