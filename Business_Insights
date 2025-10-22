@@ -149,70 +149,32 @@ group by work_id order by sum(5_star_ratings) desc;
 
 ## Detailed business solutions:
 
--- 1)What are the most popular books and authors? What about the most controversial?
-      The most popular book  and author is "The Hunger Games" by "Suzanne Collins".
-      The most controversial book and author based on number of ratings is "Mary Robinette Kowal" by "Midnight Hour".
-
--- 2)Which genres have the highest reader engagement? What are their most popular books?
-      Biograpgy, children and comics are the top 3 genre with highest reader engagement and their corresponding books 
-      are Harlot,Mei Shao Nu Zhan Shi seramunXin Zhuang Ban and All-Star Superman.
-
--- 3)Who are the highest-rated authors? How have their works trended by publication year?
-      J.K. Rowling, Suzanne Collins, Stephenie Meyer are the top 3 authors with highest ratings, over the years they had published 12,8,8 books respectively.
-      J.K. Rowling was at the peak from 1997 to 2016.
-      Suzanne Collins was at the peak from 2003 to 2010.
-      Stephenie Meyer was at the peak from 2005 to 2015.
-
--- 4)Do longer reviews get more "helpful" votes? What about reviews with extreme ratings (1 or 5 stars)?
-      No, longer reviews doesn't get high number of comments.
-      "Twilight" and "Fifty shades of Grey" had got more number of one star rating
-      "Harry Potter and the Philosopher's Stone" and "The Hunger Games"
-      had got more number of five star ratings.
-
 🔍 Analysis & Queries
 1️⃣ Popularity & Controversy Analysis
-
 Popular Books: Identified books with the highest number of ratings.
-
 Popular Authors: Found authors with the highest total review counts.
-
 Controversial Books: Highlighted books with lowest ratings and reviews, indicating divided reader opinions.
-
 📊 Insight:
-
 Popular authors include J.K. Rowling, Suzanne Collins, and Stephenie Meyer.
 “Harry Potter and the Philosopher’s Stone” and “The Hunger Games” received the most 5-star ratings, while “Twilight” and “Fifty Shades of Grey” had the highest 1-star ratings.
 
 2️⃣ Genre Engagement Analysis
-
 Split multi-genre books using recursive CTEs to analyze genre-level engagement.
-
 Calculated ratings_count and reviews_count per genre.
-
 📊 Insight:
-
 Biography, Children, and Comics genres showed the highest reader engagement, with top books such as Harlot, Mei Shao Nu Zhan Shi seramunXin Zhuang Ban, and All-Star Superman.
 
 3️⃣ Author Trend Analysis
-
 Aggregated ratings by author and tracked publication year trends using GROUP_CONCAT.
-
 📊 Insight:
-
 J.K. Rowling: Peak period (1997–2016)
-
 Suzanne Collins: Peak period (2003–2010)
-
 Stephenie Meyer: Peak period (2005–2015)
 
 4️⃣ Review Helpfulness & Rating Extremes
-
 Compared review text length with number of helpful votes.
-
 Analyzed correlation between extreme ratings (1-star and 5-star) and popularity.
-
 📊 Insight:
-
 Longer reviews did not necessarily receive more helpful votes, but extreme-rated books tended to have higher engagement (both positive and negative).
 
 💡 Business Insights Summary
